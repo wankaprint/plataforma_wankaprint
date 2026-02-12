@@ -57,21 +57,111 @@ export default function ProductForm({
 
     return (
         <div className="space-y-8">
-            {/* 1. Config */}
+            {/* 1. Selector Wanka - Configuración */}
             {!hideQuantitySelector && (
                 <section className="bg-white p-6 rounded-xl shadow-sm border space-y-4">
-                    <h3 className="font-bold flex items-center gap-2"><Store size={18} /> Configuración</h3>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Cantidad</label>
-                        <select
-                            value={quantity}
-                            onChange={(e) => onQuantityChange(Number(e.target.value))}
-                            className="w-full border rounded-lg p-2"
-                        >
-                            {[100, 200, 500, 1000].map(q => (
-                                <option key={q} value={q}>{q} unidades</option>
-                            ))}
-                        </select>
+                    <h3 className="font-bold flex items-center gap-2"><Store size={18} /> Elige tu Cantidad</h3>
+
+                    {/* Quantity Grid - Reemplazo Total */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {[
+                            { quantity: 1000, label: "1 Millar", market_price: 95, bulk_price: 59, cash_discount: 5 },
+                            { quantity: 2000, label: "2 Millares", market_price: 190, bulk_price: 110, cash_discount: 10 },
+                            { quantity: 5000, label: "5 Millares", market_price: 475, bulk_price: 260, cash_discount: 20 }
+                        ].map((tier) => {
+                            const isSelected = quantity === tier.quantity;
+                            const isFullPayment = paymentMethod === 'TOTAL_RECOJO'; // Gatillo para precio verde
+
+                            // Nivel 3: Precio Verde (Yape/Plin/Full)
+                            const finalPrice = isFullPayment ? (tier.bulk_price - tier.cash_discount) : tier.bulk_price;
+
+                            // Ahorro Total = Precio Mercado - Precio Final
+                            const totalSavings = tier.market_price - finalPrice;
+
+                            return (
+                                <div
+                                    key={tier.quantity}
+                                    onClick={() => onQuantityChange(tier.quantity)}
+                                    className={`
+                                        relative cursor-pointer border-2 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between
+                                        ${isSelected
+                                            ? 'border-[#742384] bg-purple-50 shadow-lg transform scale-105 z-10'
+                                            : 'border-gray-200 hover:border-purple-200 hover:bg-gray-50'
+                                        }
+                                    `}
+                                >
+                                    {/* Badge de Ahorro - Gatillo Mental */}
+                                    {isSelected && (
+                                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#742384] text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm whitespace-nowrap">
+                                            AHORRAS S/ {totalSavings.toFixed(2)}
+                                        </div>
+                                    )}
+
+                                    <div className="text-center mb-2 mt-2">
+                                        <p className={`font-bold text-lg ${isSelected ? 'text-[#742384]' : 'text-gray-700'}`}>
+                                            {tier.label}
+                                        </p>
+                                    </div>
+
+                                    <div className="text-center space-y-1">
+                                        {/* Nivel 1: Precio Referencia (Rojo Tachado) */}
+                                        <p className="text-xs text-red-400 line-through font-medium">
+                                            S/ {tier.market_price.toFixed(2)}
+                                        </p>
+
+                                        {/* Nivel 2 y 3: Cascada de Precios */}
+                                        <div className="flex flex-col items-center justify-center">
+                                            {isFullPayment ? (
+                                                <>
+                                                    {/* Si es Pago Completo: Tacha el precio Wanka y muestra el Verde */}
+                                                    <span className="text-xs text-gray-400 line-through">
+                                                        S/ {tier.bulk_price.toFixed(2)}
+                                                    </span>
+                                                    <p className="text-2xl font-black text-emerald-600 animate-in zoom-in duration-300">
+                                                        S/ {finalPrice.toFixed(2)}
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                // Si es Adelanto: Muestra precio Wanka normal
+                                                <p className="text-2xl font-black text-gray-900">
+                                                    S/ {finalPrice.toFixed(2)}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Mensaje de Refuerzo Global (Debajo del Grid) */}
+                    <div className="mt-4">
+                        {[
+                            { quantity: 1000, label: "1 Millar", market_price: 95, bulk_price: 59, cash_discount: 5 },
+                            { quantity: 2000, label: "2 Millares", market_price: 190, bulk_price: 110, cash_discount: 10 },
+                            { quantity: 5000, label: "5 Millares", market_price: 475, bulk_price: 260, cash_discount: 20 }
+                        ].map((tier) => {
+                            if (quantity !== tier.quantity) return null;
+                            const isFullPayment = paymentMethod === 'TOTAL_RECOJO';
+
+                            return (
+                                <div key={tier.quantity} className="text-center animate-in fade-in slide-in-from-top-2 duration-300">
+                                    {isFullPayment ? (
+                                        <div className="bg-emerald-50 text-emerald-800 p-3 rounded-lg border border-emerald-100 text-sm">
+                                            🎉 ¡Excelente! Estás obteniendo el <strong>Mejor Precio Posible</strong>.
+                                            <br />
+                                            Ahorro total: <strong>S/ {(tier.market_price - (tier.bulk_price - tier.cash_discount)).toFixed(2)}</strong>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-purple-50 text-purple-900 p-3 rounded-lg border border-purple-100 text-sm flex items-center justify-between gap-4 cursor-pointer hover:bg-purple-100 transition-colors"
+                                            onClick={() => onPaymentMethodChange('TOTAL_RECOJO')}>
+                                            <span>💡 ¿Quieres ahorrar <strong>S/ {tier.cash_discount.toFixed(2)}</strong> extra?</span>
+                                            <span className="font-bold underline text-purple-700">Pagar todo ahora →</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
                     </div>
                 </section>
             )}
