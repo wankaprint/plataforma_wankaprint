@@ -24,7 +24,7 @@ export default function Navbar() {
             <div className="container mx-auto px-4 h-20 flex items-center justify-between">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3 group">
-                    <img src="/images/logo.png" onError={(e) => e.currentTarget.style.display = 'none'} alt="WankaPrint Logo" className="h-10 w-auto object-contain" />
+                    <img src="/images/logo.png" onError={(e) => e.currentTarget.style.display = 'none'} alt="WankaPrint Logo" className="h-16 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Nav */}

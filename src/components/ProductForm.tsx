@@ -80,8 +80,8 @@ export default function ProductForm({
             <section className="bg-white p-6 rounded-xl shadow-sm border space-y-4">
                 <h3 className="font-bold flex items-center gap-2"><Upload size={18} /> Diseño</h3>
                 <div className={`border-2 border-dashed rounded-lg p-4 transition-all ${localFile
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-300 bg-gray-50'
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-gray-300 bg-gray-50'
                     }`}>
                     {localFile ? (
                         <div className="flex items-center gap-3">

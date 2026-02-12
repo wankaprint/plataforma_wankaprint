@@ -99,7 +99,7 @@ export default function ContactPage() {
                                 </div>
                                 <div>
                                     <p className="font-bold text-gray-900">Teléfono / WhatsApp</p>
-                                    <p className="text-gray-600">+51 954 992 500</p>
+                                    <p className="text-gray-600">+51 983 555 435</p>
                                 </div>
                             </div>
 
