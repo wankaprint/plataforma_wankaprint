@@ -40,8 +40,14 @@ export default function Step4_PaymentSummary() {
     const finalPriceWithBonus = bulkPrice - fullPaymentBonus;
     const depositAmount = (bulkPrice * (deposit_percent || 60)) / 100;
 
+    // Visual Previews (Fixed values for the cards)
+    const previewAdelantoPending = bulkPrice - depositAmount;
+    const previewTotalBonus = fullPaymentBonus;
+    const previewTotalFinal = finalPriceWithBonus;
+
+    // Actual amounts to pay (Reactive to user selection)
     const amountToPay = paymentMethod === 'ADELANTO_60' ? depositAmount : finalPriceWithBonus;
-    const amountPending = paymentMethod === 'ADELANTO_60' ? bulkPrice - depositAmount : 0;
+    const amountPendingActual = paymentMethod === 'ADELANTO_60' ? previewAdelantoPending : 0;
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -115,16 +121,32 @@ export default function Step4_PaymentSummary() {
 
             // 3. Redirect to WhatsApp
             setTimeout(() => {
-                const phone = '51987654321'; // Replace with actual business phone
-                const message = encodeURIComponent(
-                    `¡Hola! Acabo de realizar mi pedido:\n\n` +
-                    `📋 Código: ${orderCode}\n` +
-                    `👤 ${customerData.firstName} ${customerData.lastName}\n` +
-                    `📦 ${product.name} - ${selectedQuantity} unidades\n` +
-                    `💰 Total: S/ ${amountToPay.toFixed(2)}\n\n` +
-                    `¿Pueden confirmar mi pedido?`
-                );
-                window.location.href = `https://wa.me/${phone}?text=${message}`;
+                const phone = '51983555435'; // Número real de WankaPrint
+
+                const status = paymentMethod === 'TOTAL'
+                    ? '✅ CANCELADO (Bono aplicado)'
+                    : '⏳ ADELANTO (60%)';
+
+                const saldo = paymentMethod === 'TOTAL'
+                    ? '0.00'
+                    : (bulkPrice - amountToPay).toFixed(2);
+
+                const rawMessage = `¡Hola, WankaPrint! 👋 He registrado mi pedido desde la web.\n\n` +
+                    `📝 Orden: ${orderCode}\n` +
+                    `👤 Cliente: ${customerData.firstName} ${customerData.lastName}\n` +
+                    `📦 Producto: ${product.name} (${selectedQuantity} unidades)\n\n` +
+                    `💵 Resumen de Pago:\n` +
+                    `----------------------------\n` +
+                    `Total de la Orden: S/ ${bulkPrice.toFixed(2)}\n` +
+                    `Estado: ${status}\n` +
+                    `Monto Pagado: S/ ${amountToPay.toFixed(2)}\n` +
+                    `Saldo por Pagar: S/ ${saldo}\n\n` +
+                    `🎨 Sobre el Diseño:\n` +
+                    `He subido mis archivos/bocetos. Quedo atento a la coordinación con el diseñador para la revisión del arte final y el visto bueno.\n\n` +
+                    `Ya subí mi comprobante en la web, pero se los envío por aquí también para mayor seguridad. 😊 Me avisan cuando pase a producción.`;
+
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`;
+                window.location.href = url;
             }, 1000);
 
         } catch (error: any) {
@@ -227,7 +249,7 @@ export default function Step4_PaymentSummary() {
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-gray-500">Pendiente al recoger:</span>
-                                    <span className="font-semibold text-yellow-600">S/ {amountPending.toFixed(2)}</span>
+                                    <span className="font-semibold text-yellow-600">S/ {previewAdelantoPending.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
@@ -314,24 +336,28 @@ export default function Step4_PaymentSummary() {
                 <div className="bg-white rounded-lg p-6 mb-6 border-2 border-purple-300 text-center">
                     <p className="font-semibold text-gray-900 mb-3">📱 Escanea el QR para pagar con Yape:</p>
 
-                    {/* QR Placeholder - User will replace this */}
-                    <div className="flex justify-center mb-4">
-                        <div className="w-48 h-48 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center border-2 border-dashed border-purple-300">
-                            <div className="text-center">
-                                <div className="text-6xl mb-2">📱</div>
-                                <p className="text-sm text-gray-600 font-medium">QR de Yape</p>
-                                <p className="text-xs text-gray-500 mt-1">(Reemplazar con QR real)</p>
-                            </div>
-                        </div>
+                    {/* Real QR Image */}
+                    <div className="flex justify-center mb-4 text-center">
+                        <img
+                            src="/images/qr-pago.png"
+                            alt="QR de Pago Yape"
+                            className="w-56 h-auto rounded-xl shadow-md border border-purple-100"
+                        />
                     </div>
 
                     {/* Yape Details */}
-                    <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                        <p className="font-semibold text-sm text-gray-900 mb-2">💳 Datos para Yape:</p>
-                        <div className="space-y-1 text-sm">
-                            <p><strong>Número:</strong> <span className="text-[#742384] font-bold text-lg">987 654 321</span></p>
-                            <p><strong>Monto a pagar:</strong> <span className="text-emerald-600 font-bold text-xl">S/ {amountToPay.toFixed(2)}</span></p>
-                            <p className="text-xs text-gray-500 mt-2">⚡ Envía el monto exacto</p>
+                    <div className="bg-purple-50 rounded-lg p-5 border border-purple-200">
+                        <p className="font-bold text-gray-900 mb-3 flex items-center justify-center gap-2">
+                            💳 Datos para el Yapeo:
+                        </p>
+                        <div className="space-y-2 text-center">
+                            <p className="text-gray-600">Titular: <span className="font-bold text-gray-900 uppercase">Omar Mayta</span></p>
+                            <p className="text-gray-600">Número: <span className="text-[#742384] font-black text-2xl tracking-wider">983 555 435</span></p>
+                            <div className="mt-4 pt-4 border-t border-purple-200">
+                                <p className="text-sm text-gray-500 font-medium">Monto exacto a pagar:</p>
+                                <p className="text-emerald-600 font-black text-3xl mt-1">S/ {amountToPay.toFixed(2)}</p>
+                            </div>
+                            <p className="text-xs text-purple-400 mt-2 italic">⚡ Envío inmediato por favor</p>
                         </div>
                     </div>
                 </div>
