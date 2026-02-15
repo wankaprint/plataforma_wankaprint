@@ -75,6 +75,7 @@ export interface PurchaseStepperState {
     paymentMethod: 'ADELANTO_60' | 'TOTAL';
     paymentProofFile: File | null;
     paymentProofUrl: string | null;
+    orderCode: string; // Short code like WK-A7B2
 
     // Navigation
     currentStep: 1 | 2 | 3 | 4;

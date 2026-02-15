@@ -89,7 +89,7 @@ export default function Step3_FileUploader() {
 
                 const { data, error } = await supabase.storage
                     .from('designs')
-                    .upload(filename, file);
+                    .upload(filename, file, { upsert: true });
 
                 clearInterval(progressInterval);
 

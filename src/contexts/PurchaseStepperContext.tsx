@@ -10,6 +10,16 @@ import {
 
 const PurchaseStepperContext = createContext<PurchaseStepperContextType | null>(null);
 
+// Utility function to generate short order code (WK-XXXX)
+function generateShortOrderCode(): string {
+    const chars = '0123456789'; // Only numbers
+    let code = 'WK-';
+    for (let i = 0; i < 4; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
 export function usePurchaseStepper() {
     const context = useContext(PurchaseStepperContext);
     if (!context) {
@@ -48,6 +58,7 @@ export function PurchaseStepperProvider({ children, product }: Props) {
         paymentMethod: 'TOTAL',
         paymentProofFile: null,
         paymentProofUrl: null,
+        orderCode: generateShortOrderCode(), // Generate code on initialization
         currentStep: 1,
         product
     });
@@ -107,6 +118,7 @@ export function PurchaseStepperProvider({ children, product }: Props) {
     const nextStep = useCallback(() => {
         setState(prev => ({
             ...prev,
+            orderCode: prev.orderCode || generateShortOrderCode(), // Ensure code exists
             currentStep: Math.min(4, prev.currentStep + 1) as 1 | 2 | 3 | 4
         }));
     }, []);
@@ -139,6 +151,7 @@ export function PurchaseStepperProvider({ children, product }: Props) {
             paymentMethod: 'TOTAL',
             paymentProofFile: null,
             paymentProofUrl: null,
+            orderCode: generateShortOrderCode(), // Generate new code on reset
             currentStep: 1,
             product
         });

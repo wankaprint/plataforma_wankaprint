@@ -16,6 +16,7 @@ export default function Step4_PaymentSummary() {
         paymentProofFile,
         setPaymentProofFile,
         product,
+        orderCode,
         previousStep
     } = usePurchaseStepper();
 
@@ -68,13 +69,13 @@ export default function Step4_PaymentSummary() {
         try {
             // 1. Upload payment proof
             setUploadProgress(20);
-            const orderCode = `WK${Date.now()}`;
             const ext = paymentProofFile.name.split('.').pop();
-            const paymentFilename = `${orderCode}_YAPE.${ext}`;
+            const timestamp = Date.now(); // Add timestamp to make filename unique
+            const paymentFilename = `${orderCode}_YAPE_${timestamp}.${ext}`;
 
             const { data: paymentData, error: paymentError } = await supabase.storage
                 .from('payments')
-                .upload(paymentFilename, paymentProofFile);
+                .upload(paymentFilename, paymentProofFile, { upsert: true });
 
             if (paymentError) throw paymentError;
 
@@ -86,7 +87,7 @@ export default function Step4_PaymentSummary() {
 
             // 2. Create order in database
             const orderData: any = {
-                order_code: orderCode,
+                order_code: orderCode, // Use short code from context
                 customer_name: customerData.firstName || '',
                 customer_lastname: customerData.lastName || '',
                 customer_phone: customerData.phone || '',
@@ -105,7 +106,7 @@ export default function Step4_PaymentSummary() {
                 delivery_fee: 0,
                 total_amount: bulkPrice,
                 amount_paid: amountToPay,
-                status: paymentMethod === 'ADELANTO_60' ? 'Pendiente' : 'Pagado',
+                status: 'Recibido', // Always start with 'Recibido' - matches DB constraint
                 is_delivery: false
             };
 
@@ -133,6 +134,7 @@ export default function Step4_PaymentSummary() {
 
                 const rawMessage = `¡Hola, WankaPrint! 👋 He registrado mi pedido desde la web.\n\n` +
                     `📝 Orden: ${orderCode}\n` +
+                    `🔍 Rastrea tu pedido en: wankaprint.com/rastreo\n` +
                     `👤 Cliente: ${customerData.firstName} ${customerData.lastName}\n` +
                     `📦 Producto: ${product.name} (${selectedQuantity} unidades)\n\n` +
                     `💵 Resumen de Pago:\n` +
@@ -332,6 +334,13 @@ export default function Step4_PaymentSummary() {
                     Realiza tu pago y sube el comprobante
                 </h3>
 
+                {/* ORDER CODE DISPLAY */}
+                <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-5 mb-6 text-center shadow-lg">
+                    <p className="text-white text-sm font-medium mb-2">Tu código de pedido</p>
+                    <p className="text-white text-4xl font-black tracking-wider mb-1">{orderCode}</p>
+                    <p className="text-white/80 text-xs">Guarda este código para rastrear tu pedido</p>
+                </div>
+
                 {/* QR CODE SECTION */}
                 <div className="bg-white rounded-lg p-6 mb-6 border-2 border-purple-300 text-center">
                     <p className="font-semibold text-gray-900 mb-3">📱 Escanea el QR para pagar con Yape:</p>
@@ -357,7 +366,12 @@ export default function Step4_PaymentSummary() {
                                 <p className="text-sm text-gray-500 font-medium">Monto exacto a pagar:</p>
                                 <p className="text-emerald-600 font-black text-3xl mt-1">S/ {amountToPay.toFixed(2)}</p>
                             </div>
-                            <p className="text-xs text-purple-400 mt-2 italic">⚡ Envío inmediato por favor</p>
+                            <div className="mt-4 pt-4 border-t border-purple-200 bg-yellow-50 -mx-5 -mb-5 px-5 py-4 rounded-b-lg">
+                                <p className="text-xs text-orange-700 font-semibold flex items-start gap-2">
+                                    <span className="text-base">⚠️</span>
+                                    <span><strong>Importante:</strong> Incluye el código <span className="font-black">{orderCode}</span> en la descripción de tu Yape/Plin para validar tu pedido rápido.</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

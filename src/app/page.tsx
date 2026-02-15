@@ -30,9 +30,6 @@ export default function Home() {
                                 <a href="#catalogo" className="px-8 py-4 bg-white text-[#742384] font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2">
                                     Ver Productos <ArrowRight size={20} />
                                 </a>
-                                <Link href="/admin" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition-all">
-                                    Soy Mayorista
-                                </Link>
                             </div>
 
                             <div className="pt-8 flex items-center gap-6 text-sm font-medium text-white/80">

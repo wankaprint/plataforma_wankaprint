@@ -58,7 +58,7 @@ export default function PaymentModal({
             // Subir a bucket 'payments' de Supabase
             const { error: uploadError, data } = await supabase.storage
                 .from('payments')
-                .upload(fileName, file)
+                .upload(fileName, file, { upsert: true })
 
             if (uploadError) throw uploadError
 
@@ -126,8 +126,8 @@ export default function PaymentModal({
                         </label>
                         <div className="flex items-center justify-center w-full">
                             <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-all ${file
-                                    ? 'border-green-500 bg-green-50 hover:bg-green-100'
-                                    : 'border-[#742384] bg-purple-50 hover:bg-purple-100'
+                                ? 'border-green-500 bg-green-50 hover:bg-green-100'
+                                : 'border-[#742384] bg-purple-50 hover:bg-purple-100'
                                 }`}>
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     {file ? (
