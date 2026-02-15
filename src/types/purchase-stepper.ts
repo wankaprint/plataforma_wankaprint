@@ -4,8 +4,9 @@ export interface PriceConfig {
         quantity: number;
         market_price: number;
         bulk_price: number;
+        full_payment_bonus?: number; // Fixed bonus amount for full payment (e.g., 2 or 3 soles)
     }>;
-    cash_discount_percent: number;
+    cash_discount_percent: number; // Deprecated - keeping for backward compatibility
     deposit_percent: number;
 }
 
@@ -87,6 +88,7 @@ export interface PurchaseStepperActions {
     setCustomerData: (data: Partial<CustomerData>) => void;
     addDesignFiles: (files: File[]) => void;
     removeDesignFile: (filename: string) => void;
+    setDesignFileUrls: (urls: string[]) => void;
     setPaymentMethod: (method: 'ADELANTO_60' | 'TOTAL') => void;
     setPaymentProofFile: (file: File | null) => void;
     nextStep: () => void;

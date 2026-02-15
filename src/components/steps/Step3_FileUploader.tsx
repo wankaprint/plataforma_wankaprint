@@ -12,6 +12,7 @@ export default function Step3_FileUploader() {
         removeDesignFile,
         uploadProgress,
         designFileUrls,
+        setDesignFileUrls,
         nextStep,
         previousStep
     } = usePurchaseStepper();
@@ -109,6 +110,7 @@ export default function Step3_FileUploader() {
             }
 
             setUploadedFiles(urls);
+            setDesignFileUrls(urls); // Save to context so Step4 can read it
 
             // Small delay to show 100% progress
             setTimeout(() => {

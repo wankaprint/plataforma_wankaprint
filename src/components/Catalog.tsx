@@ -28,14 +28,23 @@ function normalizeImagePath(path: string | null): string {
     return `/images/${path}`
 }
 
+interface PriceConfig {
+    tiers: Array<{
+        quantity: number;
+        market_price: number;
+        bulk_price: number;
+    }>;
+    cash_discount_percent: number;
+    deposit_percent: number;
+}
+
 interface Product {
     id: string
     name: string
     description: string | null
     image_url: string | null
-    base_price_1k: number
-    base_price_2k: number
-    base_price_3k: number
+    unit_reference_price?: number
+    price_config?: PriceConfig
 }
 
 export default function Catalog() {
@@ -113,7 +122,17 @@ export default function Catalog() {
                             <div className="flex items-end justify-between mt-auto pt-6 border-t border-gray-50">
                                 <div>
                                     <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Precio x Millar</p>
-                                    <p className="text-2xl font-black text-[#742384]">S/ {product.base_price_1k ? product.base_price_1k.toFixed(2) : '0.00'}</p>
+                                    <p className="text-2xl font-black text-[#742384]">S/ {(() => {
+                                        // Use unit_reference_price first
+                                        if (product.unit_reference_price && product.unit_reference_price > 0) {
+                                            return product.unit_reference_price.toFixed(2);
+                                        }
+                                        // Fallback to price_config first tier
+                                        if (product.price_config?.tiers?.[0]?.bulk_price) {
+                                            return product.price_config.tiers[0].bulk_price.toFixed(2);
+                                        }
+                                        return '0.00';
+                                    })()}</p>
                                 </div>
                                 <Link href={`/product/${product.id}`} className="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-[#742384] transition-colors flex items-center gap-2 group/btn">
                                     Comprar ahora <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />

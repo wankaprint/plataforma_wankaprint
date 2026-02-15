@@ -33,7 +33,8 @@ export default function Step1_QuantitySelector() {
     const handleCustomQuantitySelect = (quantity: number) => {
         setQuantity(quantity);
         setCustomQuantity(quantity);
-        setShowMoreQuantities(false);
+        // Keep dropdown open so price shows immediately (no double-click needed)
+        // setShowMoreQuantities(false);
     };
 
     const calculateSavings = (tier: typeof tiers[0]) => {
@@ -41,7 +42,8 @@ export default function Step1_QuantitySelector() {
         return tier.market_price - tier.bulk_price;
     };
 
-    const pricePerUnit = selectedTier ? (selectedTier.bulk_price / selectedTier.quantity).toFixed(3) : '0.000';
+    // Fixed: Calculate price per THOUSAND, not per unit
+    const pricePerThousand = selectedTier ? (selectedTier.bulk_price / (selectedTier.quantity / 1000)).toFixed(2) : '0.00';
     const totalSavings = selectedTier ? calculateSavings(selectedTier) : 0;
 
     return (
@@ -101,7 +103,7 @@ export default function Step1_QuantitySelector() {
                 {/* 4th Card - "Más Cantidades" */}
                 <div
                     className={`
-            relative border-2 rounded-xl p-6 transition-all duration-200
+            relative border-2 rounded-xl p-4 overflow-hidden transition-all duration-200
             ${customQuantity
                             ? 'border-[#742384] bg-purple-50 shadow-lg'
                             : 'border-dashed border-gray-300 hover:border-purple-300 hover:bg-purple-50'
@@ -134,7 +136,7 @@ export default function Step1_QuantitySelector() {
                             <select
                                 value={customQuantity || ''}
                                 onChange={(e) => handleCustomQuantitySelect(Number(e.target.value))}
-                                className="w-full border-2 border-[#742384] rounded-lg p-2 font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                                className="w-full border-2 border-[#742384] rounded-lg p-2 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-400"
                             >
                                 <option value="" disabled>Elige...</option>
                                 {moreTiers.map((tier) => (
@@ -145,8 +147,8 @@ export default function Step1_QuantitySelector() {
                             </select>
 
                             {customQuantity && (
-                                <div className="text-center pt-2 border-t">
-                                    <p className="text-xs text-red-400 line-through">
+                                <div className="w-full text-center pt-3 mt-2 border-t border-purple-200 px-2">
+                                    <p className="text-xs text-red-400 line-through mb-1">
                                         S/ {tiers.find(t => t.quantity === customQuantity)?.market_price.toFixed(2)}
                                     </p>
                                     <p className="text-lg font-black text-[#742384]">
@@ -159,27 +161,26 @@ export default function Step1_QuantitySelector() {
                 </div>
             </div>
 
+            {/* Teaser Banner - Curiosity Building */}
+            <div className="bg-gradient-to-r from-purple-50/50 to-pink-50/50 border border-[#742384]/20 rounded-lg p-4 text-center">
+                <p className="text-sm text-gray-700">
+                    💡 <span className="font-semibold">Tip WankaPrint:</span> Desbloquea un Bono Adicional eligiendo la opción de <span className="font-bold text-[#742384]">Pago Total</span> en el último paso
+                </p>
+            </div>
+
             {/* Feedback Display */}
             {selectedTier && (
                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 text-center animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="flex items-center justify-center gap-6 flex-wrap">
                         <div>
-                            <p className="text-sm text-gray-600">Precio por millar</p>
-                            <p className="text-2xl font-bold text-[#742384]">S/ {pricePerUnit}</p>
+                            <p className="text-sm text-gray-600">🔥 Cada millar te está costando:</p>
+                            <p className="text-2xl font-bold text-[#742384]">S/ {pricePerThousand}</p>
                         </div>
                         <div className="h-12 w-px bg-purple-200"></div>
                         <div>
                             <p className="text-sm text-gray-600">¡Estás ahorrando!</p>
                             <p className="text-2xl font-bold text-green-600">S/ {totalSavings.toFixed(2)}</p>
                         </div>
-                        {cash_discount_percent > 0 && (
-                            <>
-                                <div className="h-12 w-px bg-purple-200"></div>
-                                <div className="bg-emerald-100 px-4 py-2 rounded-lg">
-                                    <p className="text-xs text-emerald-700">💰 Descuento extra del {cash_discount_percent}% al pagar completo</p>
-                                </div>
-                            </>
-                        )}
                     </div>
                 </div>
             )}

@@ -34,13 +34,13 @@ export default function Step4_PaymentSummary() {
 
     const { cash_discount_percent, deposit_percent } = product.price_config;
 
-    // Calculate prices safely
+    // Calculate prices using FIXED BONUS amount (not percentage)
     const bulkPrice = selectedTier.bulk_price || 0;
-    const cashDiscount = (bulkPrice * (cash_discount_percent || 0)) / 100;
-    const finalPriceWithDiscount = bulkPrice - cashDiscount;
+    const fullPaymentBonus = selectedTier.full_payment_bonus || 0; // Fixed amount bonus
+    const finalPriceWithBonus = bulkPrice - fullPaymentBonus;
     const depositAmount = (bulkPrice * (deposit_percent || 60)) / 100;
 
-    const amountToPay = paymentMethod === 'ADELANTO_60' ? depositAmount : finalPriceWithDiscount;
+    const amountToPay = paymentMethod === 'ADELANTO_60' ? depositAmount : finalPriceWithBonus;
     const amountPending = paymentMethod === 'ADELANTO_60' ? bulkPrice - depositAmount : 0;
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,7 +176,12 @@ export default function Step4_PaymentSummary() {
                     </div>
                     <div className="flex justify-between">
                         <span className="text-gray-600">Archivos subidos:</span>
-                        <span className="font-semibold text-green-600">{designFileUrls.length} archivo(s)</span>
+                        <span className="font-semibold text-green-600">
+                            {designFileUrls.length === 1
+                                ? '1 archivo subido'
+                                : `${designFileUrls.length} archivos subidos`
+                            }
+                        </span>
                     </div>
                 </div>
             </div>
@@ -206,18 +211,22 @@ export default function Step4_PaymentSummary() {
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                                 <Wallet className="text-gray-700" size={20} />
-                                <p className="font-bold text-lg">Adelanto {deposit_percent}%</p>
+                                <p className="font-bold text-lg">Dejar Adelanto</p>
                             </div>
                             <p className="text-sm text-gray-600 mb-3">
-                                Paga el {deposit_percent}% ahora y el resto al recoger tu pedido
+                                💳 Cancela el resto al momento de recoger tu producto
                             </p>
-                            <div className="bg-white rounded-lg p-3 border">
-                                <div className="flex justify-between mb-1">
-                                    <span className="text-sm text-gray-600">Pagar ahora:</span>
+                            <div className="bg-white rounded-lg p-4 border space-y-2">
+                                <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span className="text-sm text-gray-600">Total de la orden:</span>
+                                    <span className="font-semibold text-lg text-gray-900">S/ {bulkPrice.toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-medium text-gray-700">Pagar ahora ({deposit_percent}%):</span>
                                     <span className="font-bold text-xl text-[#742384]">S/ {depositAmount.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Pendiente al recoger:</span>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-gray-500">Pendiente al recoger:</span>
                                     <span className="font-semibold text-yellow-600">S/ {amountPending.toFixed(2)}</span>
                                 </div>
                             </div>
@@ -251,30 +260,44 @@ export default function Step4_PaymentSummary() {
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                                 <CheckCircle className="text-emerald-600" size={20} />
-                                <p className="font-bold text-lg">Pago Total</p>
-                                <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">
-                                    -{cash_discount_percent}%
-                                </span>
+                                <p className="font-bold text-lg">Pago Total (🎁 Ahorro Extra)</p>
                             </div>
-                            <p className="text-sm text-gray-600 mb-3">
-                                Paga todo ahora y obtén {cash_discount_percent}% de descuento adicional
-                            </p>
-                            <div className="bg-white rounded-lg p-3 border border-emerald-200">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm text-gray-600">Precio normal:</span>
-                                    <span className="text-gray-400 line-through">S/ {bulkPrice.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Descuento aplicado:</span>
-                                    <span className="text-green-600 font-medium">-S/ {cashDiscount.toFixed(2)}</span>
-                                </div>
-                                <div className="border-t border-emerald-200 mt-2 pt-2">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-600">Total a pagar:</span>
-                                        <span className="font-bold text-2xl text-emerald-600">S/ {finalPriceWithDiscount.toFixed(2)}</span>
+                            {fullPaymentBonus > 0 ? (
+                                <>
+                                    <p className="text-sm text-emerald-700 font-semibold mb-3">
+                                        ✨ ¡Recibe S/ {fullPaymentBonus.toFixed(2)} de bonificación!
+                                    </p>
+                                    <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-4 border-2 border-emerald-300">
+                                        <p className="text-xs font-bold text-emerald-800 mb-2">🎉 ¡Felicidades! Accediste al Bono por Pago Total</p>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-sm text-gray-600">Precio normal:</span>
+                                            <span className="text-gray-400 line-through font-semibold">S/ {bulkPrice.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-sm font-medium text-emerald-700">Bonificación:</span>
+                                            <span className="text-emerald-600 font-bold">-S/ {fullPaymentBonus.toFixed(2)}</span>
+                                        </div>
+                                        <div className="border-t-2 border-emerald-300 mt-2 pt-2">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-bold text-gray-700">Total a pagar:</span>
+                                                <span className="font-black text-2xl text-emerald-600">S/ {finalPriceWithBonus.toFixed(2)}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-sm text-gray-600 mb-3">
+                                        Paga todo ahora
+                                    </p>
+                                    <div className="bg-white rounded-lg p-3 border border-emerald-200">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-gray-600">Total a pagar:</span>
+                                            <span className="font-bold text-2xl text-emerald-600">S/ {bulkPrice.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </button>

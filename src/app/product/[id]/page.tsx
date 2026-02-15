@@ -31,16 +31,16 @@ export default function ProductPage() {
                     ...data,
                     price_config: data.price_config || {
                         tiers: [
-                            { quantity: 1000, market_price: 95, bulk_price: data.base_price_1k || 59 },
-                            { quantity: 2000, market_price: 190, bulk_price: data.base_price_2k || 110 },
-                            { quantity: 3000, market_price: 285, bulk_price: data.base_price_3k || 160 },
-                            { quantity: 4000, market_price: 380, bulk_price: 210 },
-                            { quantity: 5000, market_price: 475, bulk_price: 260 },
-                            { quantity: 6000, market_price: 570, bulk_price: 310 },
-                            { quantity: 7000, market_price: 665, bulk_price: 360 },
-                            { quantity: 8000, market_price: 760, bulk_price: 410 },
-                            { quantity: 9000, market_price: 855, bulk_price: 460 },
-                            { quantity: 10000, market_price: 950, bulk_price: 510 }
+                            { quantity: 1000, market_price: 95, bulk_price: data.base_price_1k || 59, full_payment_bonus: 2 },
+                            { quantity: 2000, market_price: 190, bulk_price: data.base_price_2k || 110, full_payment_bonus: 2 },
+                            { quantity: 3000, market_price: 285, bulk_price: data.base_price_3k || 160, full_payment_bonus: 3 },
+                            { quantity: 4000, market_price: 380, bulk_price: 210, full_payment_bonus: 3 },
+                            { quantity: 5000, market_price: 475, bulk_price: 260, full_payment_bonus: 3 },
+                            { quantity: 6000, market_price: 570, bulk_price: 310, full_payment_bonus: 3 },
+                            { quantity: 7000, market_price: 665, bulk_price: 360, full_payment_bonus: 3 },
+                            { quantity: 8000, market_price: 760, bulk_price: 410, full_payment_bonus: 3 },
+                            { quantity: 9000, market_price: 855, bulk_price: 460, full_payment_bonus: 3 },
+                            { quantity: 10000, market_price: 950, bulk_price: 510, full_payment_bonus: 3 }
                         ],
                         cash_discount_percent: 10,
                         deposit_percent: 60

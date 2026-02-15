@@ -92,6 +92,10 @@ export function PurchaseStepperProvider({ children, product }: Props) {
         }));
     }, []);
 
+    const setDesignFileUrls = useCallback((urls: string[]) => {
+        setState(prev => ({ ...prev, designFileUrls: urls }));
+    }, []);
+
     const setPaymentMethod = useCallback((method: 'ADELANTO_60' | 'TOTAL') => {
         setState(prev => ({ ...prev, paymentMethod: method }));
     }, []);
@@ -146,6 +150,7 @@ export function PurchaseStepperProvider({ children, product }: Props) {
         setCustomerData,
         addDesignFiles,
         removeDesignFile,
+        setDesignFileUrls,
         setPaymentMethod,
         setPaymentProofFile,
         nextStep,
