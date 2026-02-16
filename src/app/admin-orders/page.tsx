@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { LogOut, Package, User, Calendar, CreditCard, Loader2, FileText, X, Download, Image as ImageIcon } from 'lucide-react';
+import { LogOut, Package, User, Calendar, CreditCard, Loader2, FileText, X, Download, Image as ImageIcon, Eye } from 'lucide-react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 interface Order {
     id: string;
@@ -30,6 +32,7 @@ export default function AdminOrdersPage() {
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
     const [selectedOrderForFiles, setSelectedOrderForFiles] = useState<Order | null>(null);
+    const [downloadingZip, setDownloadingZip] = useState(false);
 
     useEffect(() => {
         checkAuth();
@@ -97,6 +100,69 @@ export default function AdminOrdersPage() {
         const supabase = createClient();
         await supabase.auth.signOut();
         router.push('/login');
+    };
+
+    // TAREA 1: Force download individual file
+    const handleForceDownload = async (url: string, filename: string) => {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Error downloading file:', error);
+            setToast({ message: '❌ Error al descargar el archivo', type: 'error' });
+            setTimeout(() => setToast(null), 3000);
+        }
+    };
+
+    // TAREA 2: Download all files as ZIP
+    const handleDownloadZip = async (orderCode: string, fileUrls: string[]) => {
+        setDownloadingZip(true);
+        try {
+            const zip = new JSZip();
+
+            // Fetch all files and add to zip
+            const fetchPromises = fileUrls.map(async (url, index) => {
+                try {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+
+                    // Extract filename from URL or use index
+                    const urlParts = url.split('/');
+                    const filename = urlParts[urlParts.length - 1] || `archivo_${index + 1}.jpg`;
+
+                    zip.file(filename, blob);
+                } catch (error) {
+                    console.error(`Error fetching file ${index + 1}:`, error);
+                }
+            });
+
+            await Promise.all(fetchPromises);
+
+            // Generate ZIP
+            const content = await zip.generateAsync({ type: 'blob' });
+
+            // Download ZIP
+            saveAs(content, `Pedido_${orderCode}.zip`);
+
+            setToast({ message: '✅ ZIP descargado exitosamente', type: 'success' });
+            setTimeout(() => setToast(null), 3000);
+        } catch (error) {
+            console.error('Error creating ZIP:', error);
+            setToast({ message: '❌ Error al crear el ZIP', type: 'error' });
+            setTimeout(() => setToast(null), 3000);
+        } finally {
+            setDownloadingZip(false);
+        }
     };
 
     if (loading) {
@@ -308,12 +374,33 @@ export default function AdminOrdersPage() {
                                     {selectedOrderForFiles.order_code}
                                 </p>
                             </div>
-                            <button
-                                onClick={() => setSelectedOrderForFiles(null)}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                            >
-                                <X size={24} className="text-gray-500" />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                {/* TAREA 3: Download All ZIP Button */}
+                                {selectedOrderForFiles.design_files && selectedOrderForFiles.design_files.length > 0 && (
+                                    <button
+                                        onClick={() => handleDownloadZip(selectedOrderForFiles.order_code, selectedOrderForFiles.design_files)}
+                                        disabled={downloadingZip}
+                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg text-sm font-bold transition-colors"
+                                    >
+                                        {downloadingZip ? (
+                                            <>
+                                                <Loader2 className="animate-spin" size={16} />
+                                                Generando ZIP...
+                                            </>
+                                        ) : (
+                                            <>
+                                                📦 Descargar Todo (.zip)
+                                            </>
+                                        )}
+                                    </button>
+                                )}
+                                <button
+                                    onClick={() => setSelectedOrderForFiles(null)}
+                                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                >
+                                    <X size={24} className="text-gray-500" />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Modal Body */}
@@ -346,17 +433,33 @@ export default function AdminOrdersPage() {
                                                     </div>
                                                 </div>
 
-                                                {/* Download Link */}
-                                                <div className="p-3 bg-white">
-                                                    <a
-                                                        href={fileUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="flex items-center justify-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
-                                                    >
-                                                        <Download size={14} />
-                                                        Abrir/Descargar
-                                                    </a>
+
+                                                {/* TAREA 4: Separate Open and Download Actions */}
+                                                <div className="p-3 bg-white border-t border-gray-200">
+                                                    <div className="flex gap-2">
+                                                        {/* Open/Preview Button */}
+                                                        <a
+                                                            href={fileUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-xs font-bold transition-colors"
+                                                        >
+                                                            <Eye size={14} />
+                                                            Abrir
+                                                        </a>
+                                                        {/* Download Button */}
+                                                        <button
+                                                            onClick={() => {
+                                                                const urlParts = fileUrl.split('/');
+                                                                const filename = urlParts[urlParts.length - 1] || `archivo_${index + 1}.jpg`;
+                                                                handleForceDownload(fileUrl, filename);
+                                                            }}
+                                                            className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-md text-xs font-bold transition-colors"
+                                                        >
+                                                            <Download size={14} />
+                                                            Guardar
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
