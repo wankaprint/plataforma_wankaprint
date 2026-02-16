@@ -106,7 +106,7 @@ export default function Step4_PaymentSummary() {
                 delivery_fee: 0,
                 total_amount: bulkPrice,
                 amount_paid: amountToPay,
-                status: 'Recibido', // Always start with 'Recibido' - matches DB constraint
+                status: 'Pedido Recibido', // Always start with 'Pedido Recibido' - matches new DB constraint
                 is_delivery: false
             };
 

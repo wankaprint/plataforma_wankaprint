@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, Phone, ShoppingBag, Home, Users } from 'lucide-react'
+import { Menu, X, Phone, ShoppingBag, Home, Users, Search } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
@@ -42,6 +42,16 @@ export default function Navbar() {
                             {link.label}
                         </Link>
                     ))}
+
+                    {/* Tracking Link - Ghost Button Style */}
+                    <Link
+                        href="/rastreo"
+                        className="px-3 py-1.5 text-sm font-medium text-[#742384] border-2 border-[#742384]/30 rounded-full hover:bg-purple-50 hover:border-[#742384] transition-all flex items-center gap-1.5 shadow-sm"
+                    >
+                        <Search size={14} />
+                        🔍 Estado de mi Pedido
+                    </Link>
+
                     <Link href="/contacto" className="px-6 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-[#742384] transition-colors shadow-lg shadow-purple-900/20">
                         Pedir Cotización
                     </Link>
@@ -73,6 +83,17 @@ export default function Navbar() {
                             <span className="font-bold text-lg">{link.label}</span>
                         </Link>
                     ))}
+
+                    {/* Mobile Tracking Link */}
+                    <Link
+                        href="/rastreo"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-4 p-4 rounded-xl border-2 border-[#742384]/30 text-[#742384] hover:bg-purple-50 transition-colors"
+                    >
+                        <Search size={20} />
+                        <span className="font-bold text-lg">🔍 Estado de mi Pedido</span>
+                    </Link>
+
                     <Link href="/contacto" onClick={() => setIsOpen(false)} className="w-full text-center p-4 bg-[#742384] text-white rounded-xl font-bold">
                         Pedir Cotización
                     </Link>
