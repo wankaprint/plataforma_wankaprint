@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { LogOut, Package, User, Calendar, CreditCard, Loader2, FileText } from 'lucide-react';
+import { LogOut, Package, User, Calendar, CreditCard, Loader2, FileText, X, Download, Image as ImageIcon } from 'lucide-react';
 
 interface Order {
     id: string;
@@ -29,6 +29,7 @@ export default function AdminOrdersPage() {
     const [userEmail, setUserEmail] = useState('');
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+    const [selectedOrderForFiles, setSelectedOrderForFiles] = useState<Order | null>(null);
 
     useEffect(() => {
         checkAuth();
@@ -200,8 +201,8 @@ export default function AdminOrdersPage() {
                                         </td>
                                         <td className="px-4 py-4 text-center">
                                             <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold ${order.payment_method_type === 'Pago Total'
-                                                    ? 'bg-green-100 text-green-700 border border-green-300'
-                                                    : 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                                                ? 'bg-green-100 text-green-700 border border-green-300'
+                                                : 'bg-yellow-100 text-yellow-700 border border-yellow-300'
                                                 }`}>
                                                 {order.payment_method_type}
                                             </span>
@@ -213,14 +214,14 @@ export default function AdminOrdersPage() {
                                                     onChange={(e) => handleStatusChange(order.id, e.target.value as any)}
                                                     disabled={updatingStatus === order.id}
                                                     className={`w-full px-3 py-2 text-xs font-bold border-2 rounded-lg transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#742384] ${order.status === 'Listo'
-                                                            ? 'bg-green-50 border-green-300 text-green-700'
-                                                            : order.status === 'En Producción'
-                                                                ? 'bg-blue-50 border-blue-300 text-blue-700'
-                                                                : order.status === 'Revisión'
-                                                                    ? 'bg-yellow-50 border-yellow-300 text-yellow-700'
-                                                                    : order.status === 'En Diseño'
-                                                                        ? 'bg-purple-50 border-purple-300 text-purple-700'
-                                                                        : 'bg-gray-50 border-gray-300 text-gray-700'
+                                                        ? 'bg-green-50 border-green-300 text-green-700'
+                                                        : order.status === 'En Producción'
+                                                            ? 'bg-blue-50 border-blue-300 text-blue-700'
+                                                            : order.status === 'Revisión'
+                                                                ? 'bg-yellow-50 border-yellow-300 text-yellow-700'
+                                                                : order.status === 'En Diseño'
+                                                                    ? 'bg-purple-50 border-purple-300 text-purple-700'
+                                                                    : 'bg-gray-50 border-gray-300 text-gray-700'
                                                         } ${updatingStatus === order.id ? 'opacity-50 cursor-wait' : ''}`}
                                                 >
                                                     <option value="Pedido Recibido">📦 Pedido Recibido</option>
@@ -248,15 +249,13 @@ export default function AdminOrdersPage() {
                                         <td className="px-4 py-4">
                                             <div className="flex gap-2 justify-center">
                                                 {order.design_files && order.design_files.length > 0 && (
-                                                    <a
-                                                        href={order.design_files[0]}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
+                                                    <button
+                                                        onClick={() => setSelectedOrderForFiles(order)}
                                                         className="text-blue-600 hover:text-blue-700 transition-colors"
-                                                        title="Ver diseño"
+                                                        title="Ver archivos de diseño"
                                                     >
                                                         <FileText size={18} />
-                                                    </a>
+                                                    </button>
                                                 )}
                                                 {order.payment_proof_files && order.payment_proof_files.length > 0 && (
                                                     <a
@@ -282,10 +281,99 @@ export default function AdminOrdersPage() {
             {/* Toast Notification */}
             {toast && (
                 <div className={`fixed bottom-8 right-8 px-6 py-4 rounded-lg shadow-2xl border-2 animate-in slide-in-from-bottom-5 fade-in duration-300 ${toast.type === 'success'
-                        ? 'bg-green-50 border-green-300 text-green-800'
-                        : 'bg-red-50 border-red-300 text-red-800'
+                    ? 'bg-green-50 border-green-300 text-green-800'
+                    : 'bg-red-50 border-red-300 text-red-800'
                     }`}>
                     <p className="font-bold text-sm">{toast.message}</p>
+                </div>
+            )}
+
+            {/* File Gallery Modal */}
+            {selectedOrderForFiles && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                    onClick={() => setSelectedOrderForFiles(null)}
+                >
+                    <div
+                        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-xl z-10">
+                            <div>
+                                <h2 className="text-xl font-black text-gray-900">
+                                    Archivos del Pedido
+                                </h2>
+                                <p className="text-sm text-gray-500 font-mono font-bold mt-1">
+                                    {selectedOrderForFiles.order_code}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedOrderForFiles(null)}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                                <X size={24} className="text-gray-500" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6">
+                            {selectedOrderForFiles.design_files && selectedOrderForFiles.design_files.length > 0 ? (
+                                <>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        📁 {selectedOrderForFiles.design_files.length} archivo(s) de diseño
+                                    </p>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {selectedOrderForFiles.design_files.map((fileUrl, index) => (
+                                            <div
+                                                key={index}
+                                                className="border-2 border-gray-200 rounded-lg overflow-hidden hover:border-[#742384] transition-all group"
+                                            >
+                                                {/* Thumbnail */}
+                                                <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                                                    <img
+                                                        src={fileUrl}
+                                                        alt={`Diseño ${index + 1}`}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                                        }}
+                                                    />
+                                                    {/* Fallback icon */}
+                                                    <div className="hidden absolute inset-0 flex items-center justify-center bg-gray-50">
+                                                        <ImageIcon size={48} className="text-gray-300" />
+                                                    </div>
+                                                </div>
+
+                                                {/* Download Link */}
+                                                <div className="p-3 bg-white">
+                                                    <a
+                                                        href={fileUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center justify-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                                                    >
+                                                        <Download size={14} />
+                                                        Abrir/Descargar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center py-12">
+                                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <FileText size={32} className="text-gray-400" />
+                                    </div>
+                                    <p className="text-gray-500 font-medium">
+                                        Este pedido no tiene archivos de diseño adjuntos.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
