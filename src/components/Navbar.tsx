@@ -48,7 +48,7 @@ export default function Navbar() {
                         href="/rastreo"
                         className="px-3 py-1.5 text-sm font-medium text-[#742384] border-2 border-[#742384]/30 rounded-full hover:bg-purple-50 hover:border-[#742384] transition-all flex items-center gap-1.5 shadow-sm"
                     >
-                        <Search size={14} />
+
                         🔍 Estado de mi Pedido
                     </Link>
 
