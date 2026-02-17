@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import { usePurchaseStepper } from '@/contexts/PurchaseStepperContext';
@@ -132,6 +132,11 @@ export default function Step4_PaymentSummary() {
                     ? '0.00'
                     : (bulkPrice - amountToPay).toFixed(2);
 
+                // Conditional design message based on whether files were uploaded
+                const designMessage = designFileUrls.length > 0
+                    ? `🎨 Sobre el Diseño: He subido mis archivos/bocetos. Quedo atento a la coordinación con el diseñador para la revisión del arte final y el visto bueno.`
+                    : `🎨 Sobre el Diseño: Aún no tengo un diseño. Por favor, que el área de diseño se contacte conmigo al ${customerData.phone} para coordinar y empezar desde cero.`;
+
                 const rawMessage = `¡Hola, WankaPrint! 👋 He registrado mi pedido desde la web.\n\n` +
                     `📝 Orden: ${orderCode}\n` +
                     `🔍 Rastrea tu pedido en: wankaprint.com/rastreo\n` +
@@ -143,10 +148,8 @@ export default function Step4_PaymentSummary() {
                     `Estado: ${status}\n` +
                     `Monto Pagado: S/ ${amountToPay.toFixed(2)}\n` +
                     `Saldo por Pagar: S/ ${saldo}\n\n` +
-                    `🎨 Sobre el Diseño:\n` +
-                    `He subido mis archivos/bocetos. Quedo atento a la coordinación con el diseñador para la revisión del arte final y el visto bueno.\n\n` +
-                    `Ya subí mi comprobante en la web, pero se los envío por aquí también para mayor seguridad. 😊 Me avisan cuando pase a producción.`;
-
+                    `${designMessage}\n\n` +
+                    `Ya subí mi comprobante en la web, pero se los envío por aquí también para mayor seguridad. 😊 Me avisan cuando mi pedido pase a fase de producción.`;
                 const url = `https://wa.me/${phone}?text=${encodeURIComponent(rawMessage)}`;
                 window.location.href = url;
             }, 1000);

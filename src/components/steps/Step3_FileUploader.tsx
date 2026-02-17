@@ -55,12 +55,20 @@ export default function Step3_FileUploader() {
         setIsDragging(false);
     };
 
-    const uploadFilesToSupabase = async () => {
+    // Smart continue: upload if files exist, otherwise skip to payment
+    const handleContinue = async () => {
         if (designFiles.length === 0) {
-            alert('Por favor selecciona al menos un archivo');
+            // No files? That's OK! Skip upload and go to payment
+            setDesignFileUrls([]);
+            nextStep();
             return;
         }
 
+        // Has files? Upload them first
+        await uploadFilesToSupabase();
+    };
+
+    const uploadFilesToSupabase = async () => {
         setUploading(true);
         const supabase = createClient();
         const timestamp = Date.now();
@@ -144,8 +152,11 @@ export default function Step3_FileUploader() {
     return (
         <div className="space-y-6">
             <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Sube tus archivos de diseño</h2>
-                <p className="text-gray-600">Imágenes, PDF o archivos de Word</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Sube tu Diseño, Boceto o Referencia</h2>
+                <p className="text-gray-600 max-w-3xl mx-auto">
+                    ¿Tienes el arte final en PDF/Word? ¿Un boceto a mano en foto? ¿Una imagen de Google que te gustó? ¿Una captura de pantalla? Súbelo aquí.
+                    <span className="font-semibold text-[#742384]"> Si no tienes nada, ¡no te preocupes!</span> Déjalo en blanco y nuestro equipo te contactará a la brevedad para ayudarte a crearlo.
+                </p>
             </div>
 
             {/* Drop Zone */}
@@ -274,8 +285,8 @@ export default function Step3_FileUploader() {
                 </button>
 
                 <button
-                    onClick={uploadFilesToSupabase}
-                    disabled={designFiles.length === 0 || uploading}
+                    onClick={handleContinue}
+                    disabled={uploading}
                     className="bg-[#742384] hover:bg-[#5a1b66] disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-lg transition-all flex items-center gap-2"
                 >
                     {uploading ? (
@@ -288,7 +299,7 @@ export default function Step3_FileUploader() {
                         </>
                     ) : (
                         <>
-                            Subir y Continuar
+                            Continuar
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
