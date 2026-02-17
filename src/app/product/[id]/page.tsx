@@ -9,6 +9,15 @@ import PurchaseWizard from '@/components/PurchaseWizard'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
+// Utility: Normalize image paths to always be absolute
+const normalizeImagePath = (path: string | null): string => {
+    if (!path) return '/images/placeholder.png'; // Fallback
+    // If already starts with / or http, return as is
+    if (path.startsWith('/') || path.startsWith('http')) return path;
+    // Otherwise, prepend / to make it absolute from root
+    return `/${path}`;
+};
+
 export default function ProductPage() {
     const params = useParams()
     const [product, setProduct] = useState<ProductWithConfig | null>(null)
@@ -100,9 +109,9 @@ export default function ProductPage() {
                     <div className="flex items-center gap-6">
                         {product.image_url && (
                             <img
-                                src={product.image_url}
+                                src={normalizeImagePath(product.image_url)}
                                 alt={product.name}
-                                className="w-24 h-24 object-contain bg-gray-50 rounded-lg border"
+                                className="w-32 h-32 object-contain bg-gray-50 rounded-lg border"
                             />
                         )}
                         <div>

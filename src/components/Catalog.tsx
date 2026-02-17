@@ -115,7 +115,7 @@ export default function Catalog() {
 
                         <div className="p-6 flex-1 flex flex-col">
                             <Link href={`/product/${product.id}`}>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-[#742384] transition-colors">{product.name}</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2 transition-colors">{product.name}</h3>
                             </Link>
                             <p className="text-gray-600 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed">{product.description}</p>
 
