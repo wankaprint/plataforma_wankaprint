@@ -153,10 +153,14 @@ export default function Step3_FileUploader() {
         <div className="space-y-6">
             <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Sube tu Diseño, Boceto o Referencia</h2>
-                <p className="text-gray-600 max-w-3xl mx-auto">
+                <p className="text-gray-600 text-sm mb-4 max-w-3xl mx-auto">
                     ¿Tienes el arte final en PDF/Word? ¿Un boceto a mano en foto? ¿Una imagen de Google que te gustó? ¿Una captura de pantalla? Súbelo aquí.
-                    <span className="font-semibold text-[#742384]"> Si no tienes nada, ¡no te preocupes!</span> Déjalo en blanco y nuestro equipo te contactará a la brevedad para ayudarte a crearlo.
                 </p>
+                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 max-w-3xl mx-auto">
+                    <p className="text-gray-700 text-sm">
+                        💡 <strong>Si no tienes nada, ¡no te preocupes!</strong> Déjalo en blanco y nuestro equipo <strong>te contactará a la brevedad para ayudarte</strong> a crearlo.
+                    </p>
+                </div>
             </div>
 
             {/* Drop Zone */}
