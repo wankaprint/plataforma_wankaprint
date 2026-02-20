@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { Search, Package, Clock, Palette, Printer, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { trackOrder } from '@/app/actions/trackOrder';
 
 interface OrderStatus {
     order_code: string;
@@ -55,49 +55,26 @@ export default function RastreoClient() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Fuerza Bruta de Limpieza (Regex agresivo + String casting)
-        const rawInput = String(inputNumber);
-        const cleanId = rawInput.trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-
-        // Validar que tenga contenido (4 números)
-        if (cleanId.length < 4) {
-            setValidationError('⚠️ Ingresa los 4 números de tu comprobante');
-            return;
-        }
+        if (!inputNumber) return;
 
         setLoading(true);
         setNotFound(false);
         setOrder(null);
         setValidationError('');
 
-        // 2. Concatenar prefijo WK- si no lo tiene
-        const fullOrderCode = cleanId.startsWith('WK-') ? cleanId : `WK-${cleanId}`;
-
-        console.log('Buscando pedido (Deep Debug):', { cleanId, fullOrderCode });
-
         try {
-            const supabase = createClient();
+            // Llamamos a la Server Action en lugar de Supabase directo
+            const data = await trackOrder(inputNumber);
 
-            // 3. Búsqueda Multi-columna (ID o Order_Code) + Bypass de Caché
-            const timestamp = Date.now();
-
-            const { data, error } = await (supabase as any)
-                .from('orders')
-                .select('order_code, status, product_name, quantity, customer_name, created_at, final_art_url')
-                .or(`order_code.ilike.${fullOrderCode},id.eq.${cleanId}`)
-                .single();
-
-            if (error || !data) {
-                console.log(`[${timestamp}] No encontrado:`, { fullOrderCode, cleanId });
+            if (!data) {
                 setNotFound(true);
                 setOrder(null);
             } else {
-                console.log(`[${timestamp}] Encontrado:`, data);
                 setOrder(data as OrderStatus);
                 setNotFound(false);
             }
         } catch (err: any) {
-            console.error('Submission Crash:', err);
+            console.error('Error en búsqueda:', err);
             setNotFound(true);
             setOrder(null);
         } finally {
