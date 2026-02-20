@@ -1,5 +1,7 @@
 'use client'
 
+export const runtime = 'edge';
+
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Phone, MapPin, Clock, Send, CheckCircle, Loader2 } from 'lucide-react'

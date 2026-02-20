@@ -1,5 +1,7 @@
 'use client'
 
+export const runtime = 'edge';
+
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, Eye, Download, CheckCircle, Clock } from 'lucide-react'
