@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { ShoppingBag, Loader2 } from 'lucide-react'
+import { ShoppingBag, Loader2, ArrowRight } from 'lucide-react'
 
 // Helper function to normalize image paths
 function normalizeImagePath(path: string | null): string {
@@ -43,6 +43,7 @@ interface Product {
     name: string
     description: string | null
     image_url: string | null
+    secondary_images?: string[] | null
     unit_reference_price?: number
     price_config?: PriceConfig
 }
@@ -61,9 +62,6 @@ export default function Catalog() {
                     .select('*')
 
                 if (error || !data || data.length === 0) {
-                    // Demo data doesn't match new schema exactly but we can map it if needed
-                    // For now, if products table is empty (user didn't run SQL), show empty state or handle error.
-                    // But user said they ran the SQL.
                     console.error('Error fetching products:', error)
                 } else {
                     setProducts(data)
@@ -92,55 +90,69 @@ export default function Catalog() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {products.map((product) => (
-                    <div key={product.id} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full hover:-translate-y-1">
-                        <Link href={`/product/${product.id}`} className="block relative aspect-[4/3] bg-gray-100 overflow-hidden">
-                            {product.image_url ? (
-                                <img
-                                    src={normalizeImagePath(product.image_url)}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
-                                    <ShoppingBag size={48} className="opacity-20" />
+                {products.map((product) => {
+                    const hoverImage = product.secondary_images?.[0] ?? null
+                    return (
+                        <div key={product.id} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full hover:-translate-y-1">
+                            <Link href={`/product/${product.id}`} className="block relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                                {product.image_url ? (
+                                    <>
+                                        {/* Primary image — always visible */}
+                                        <img
+                                            src={normalizeImagePath(product.image_url)}
+                                            alt={product.name}
+                                            className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-500"
+                                        />
+                                        {/* Secondary image — crossfades in on hover */}
+                                        {hoverImage && (
+                                            <img
+                                                src={normalizeImagePath(hoverImage)}
+                                                alt={`${product.name} — vista alternativa`}
+                                                className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-500 opacity-0 group-hover:opacity-100"
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
+                                        <ShoppingBag size={48} className="opacity-20" />
+                                    </div>
+                                )}
+
+                                {/* Overlay tag */}
+                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#742384] shadow-sm z-10">
+                                    Personalizable
                                 </div>
-                            )}
-
-                            {/* Overlay tag */}
-                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-[#742384] shadow-sm">
-                                Personalizable
-                            </div>
-                        </Link>
-
-                        <div className="p-6 flex-1 flex flex-col">
-                            <Link href={`/product/${product.id}`}>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2 transition-colors">{product.name}</h3>
                             </Link>
-                            <p className="text-gray-600 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed">{product.description}</p>
 
-                            <div className="flex items-end justify-between mt-auto pt-6 border-t border-gray-50">
-                                <div>
-                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Precio x Millar</p>
-                                    <p className="text-2xl font-black text-[#742384]">S/ {(() => {
-                                        // Use unit_reference_price first
-                                        if (product.unit_reference_price && product.unit_reference_price > 0) {
-                                            return product.unit_reference_price.toFixed(2);
-                                        }
-                                        // Fallback to price_config first tier
-                                        if (product.price_config?.tiers?.[0]?.bulk_price) {
-                                            return product.price_config.tiers[0].bulk_price.toFixed(2);
-                                        }
-                                        return '0.00';
-                                    })()}</p>
-                                </div>
-                                <Link href={`/product/${product.id}`} className="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-[#742384] transition-colors flex items-center gap-2 group/btn">
-                                    Comprar ahora <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                            <div className="p-6 flex-1 flex flex-col">
+                                <Link href={`/product/${product.id}`}>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2 transition-colors">{product.name}</h3>
                                 </Link>
+                                <p className="text-gray-600 text-sm mb-6 flex-1 line-clamp-3 leading-relaxed">{product.description}</p>
+
+                                <div className="flex items-end justify-between mt-auto pt-6 border-t border-gray-50">
+                                    <div>
+                                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Precio x Millar</p>
+                                        <p className="text-2xl font-black text-[#742384]">S/ {(() => {
+                                            // Use unit_reference_price first
+                                            if (product.unit_reference_price && product.unit_reference_price > 0) {
+                                                return product.unit_reference_price.toFixed(2);
+                                            }
+                                            // Fallback to price_config first tier
+                                            if (product.price_config?.tiers?.[0]?.bulk_price) {
+                                                return product.price_config.tiers[0].bulk_price.toFixed(2);
+                                            }
+                                            return '0.00';
+                                        })()}</p>
+                                    </div>
+                                    <Link href={`/product/${product.id}`} className="px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-[#742384] transition-colors flex items-center gap-2 group/btn">
+                                        Comprar ahora <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
             {products.length === 0 && !loading && (
@@ -158,5 +170,3 @@ export default function Catalog() {
         </div>
     )
 }
-
-import { ArrowRight } from 'lucide-react'

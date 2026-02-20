@@ -6,15 +6,14 @@ import { createClient } from '@/lib/supabase/client'
 import { ProductWithConfig } from '@/types/purchase-stepper'
 import { PurchaseStepperProvider } from '@/contexts/PurchaseStepperContext'
 import PurchaseWizard from '@/components/PurchaseWizard'
+import ProductImageViewer from '@/components/ProductImageViewer'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 // Utility: Normalize image paths to always be absolute
 const normalizeImagePath = (path: string | null): string => {
-    if (!path) return '/images/placeholder.png'; // Fallback
-    // If already starts with / or http, return as is
+    if (!path) return '';
     if (path.startsWith('/') || path.startsWith('http')) return path;
-    // Otherwise, prepend / to make it absolute from root
     return `/${path}`;
 };
 
@@ -104,21 +103,26 @@ export default function ProductPageClient() {
                 </div>
             </div>
 
-            {/* Product Header */}
+            {/* Product Header — Image + Info */}
             <div className="bg-white border-b">
                 <div className="max-w-7xl mx-auto px-4 py-8">
-                    <div className="flex items-center gap-6">
-                        {product.image_url && (
-                            <img
-                                src={normalizeImagePath(product.image_url)}
-                                alt={product.name}
-                                className="w-32 h-32 object-contain bg-gray-50 rounded-lg border"
+                    <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-start">
+                        {/* Image Viewer */}
+                        <div className="w-full md:w-1/2 lg:w-2/5">
+                            <ProductImageViewer
+                                images={[
+                                    product.image_url ? normalizeImagePath(product.image_url) : null,
+                                    ...(product.secondary_images ?? []).map(normalizeImagePath),
+                                ].filter((url): url is string => Boolean(url))}
+                                productName={product.name}
                             />
-                        )}
-                        <div>
+                        </div>
+
+                        {/* Product info */}
+                        <div className="flex-1 pt-2">
                             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
                             {product.description && (
-                                <p className="text-gray-600 mt-2">{product.description}</p>
+                                <p className="text-gray-600 mt-3 leading-relaxed">{product.description}</p>
                             )}
                         </div>
                     </div>

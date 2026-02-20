@@ -15,6 +15,7 @@ export interface ProductWithConfig {
     name: string;
     description: string | null;
     image_url: string | null;
+    secondary_images?: string[] | null;
     price_config: PriceConfig;
     // Legacy fields (deprecated)
     base_price_1k: number;
