@@ -55,11 +55,12 @@ export default function RastreoClient() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Limpieza y Normalización (Trim + Case)
-        const cleaned = inputNumber.trim().toUpperCase();
+        // 1. Fuerza Bruta de Limpieza (Regex agresivo + String casting)
+        const rawInput = String(inputNumber);
+        const cleanId = rawInput.trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-        // Validar que tenga exactamente 4 números
-        if (cleaned.length < 4) {
+        // Validar que tenga contenido (4 números)
+        if (cleanId.length < 4) {
             setValidationError('⚠️ Ingresa los 4 números de tu comprobante');
             return;
         }
@@ -69,32 +70,34 @@ export default function RastreoClient() {
         setOrder(null);
         setValidationError('');
 
-        // TAREA 4 - Capa 3: Concatenar prefijo en backend y normalizar
-        const fullOrderCode = `WK-${cleaned}`;
+        // 2. Concatenar prefijo WK- si no lo tiene
+        const fullOrderCode = cleanId.startsWith('WK-') ? cleanId : `WK-${cleanId}`;
 
-        console.log('Buscando pedido:', fullOrderCode);
+        console.log('Buscando pedido (Deep Debug):', { cleanId, fullOrderCode });
 
         try {
             const supabase = createClient();
 
-            // 2. Control de Caché (Bypass de caché del navegador)
+            // 3. Búsqueda Multi-columna (ID o Order_Code) + Bypass de Caché
+            const timestamp = Date.now();
+
             const { data, error } = await (supabase as any)
                 .from('orders')
                 .select('order_code, status, product_name, quantity, customer_name, created_at, final_art_url')
-                .ilike('order_code', fullOrderCode) // Búsqueda insensible a mayúsculas
+                .or(`order_code.ilike.${fullOrderCode},id.eq.${cleanId}`)
                 .single();
 
             if (error || !data) {
-                console.log('Pedido no encontrado:', fullOrderCode);
+                console.log(`[${timestamp}] No encontrado:`, { fullOrderCode, cleanId });
                 setNotFound(true);
                 setOrder(null);
             } else {
-                console.log('Pedido encontrado:', data);
+                console.log(`[${timestamp}] Encontrado:`, data);
                 setOrder(data as OrderStatus);
                 setNotFound(false);
             }
         } catch (err: any) {
-            console.error('Error en búsqueda:', err);
+            console.error('Submission Crash:', err);
             setNotFound(true);
             setOrder(null);
         } finally {
@@ -183,10 +186,17 @@ export default function RastreoClient() {
                             </div>
                         )}
 
-                        {/* Ayuda visual */}
-                        <p className="text-xs text-gray-500 text-center">
-                            💡 Encuentra el código en tu comprobante de pago Yape/Plin
-                        </p>
+                        {/* Ayuda visual + Debug Visual Temporal */}
+                        <div className="space-y-2">
+                            <p className="text-xs text-gray-500 text-center">
+                                💡 Encuentra el código en tu comprobante de pago Yape/Plin
+                            </p>
+                            {inputNumber && (
+                                <p className="text-[10px] text-purple-400 text-center font-mono opacity-50">
+                                    Buscando: WK-{inputNumber.trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase()}
+                                </p>
+                            )}
+                        </div>
                     </form>
                 </div>
 
