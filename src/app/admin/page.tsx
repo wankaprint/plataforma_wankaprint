@@ -31,7 +31,7 @@ export default function AdminDashboard() {
 
     const updateStatus = async (id: string, newStatus: string) => {
         const supabase = createClient()
-        await supabase.from('orders').update({ status: newStatus }).eq('id', id)
+        await (supabase as any).from('orders').update({ status: newStatus }).eq('id', id)
         fetchOrders()
     }
 

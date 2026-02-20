@@ -25,7 +25,7 @@ export default function ContactPage() {
             const supabase = createClient()
 
             // 1. Save to Supabase
-            const { error } = await supabase.from('quotes').insert([data])
+            const { error } = await (supabase as any).from('quotes').insert([data])
             if (error) throw error
 
             setSuccess(true)
