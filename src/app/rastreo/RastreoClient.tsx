@@ -55,8 +55,11 @@ export default function RastreoClient() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 1. Limpieza y Normalización (Trim + Case)
+        const cleaned = inputNumber.trim().toUpperCase();
+
         // Validar que tenga exactamente 4 números
-        if (inputNumber.length < 4) {
+        if (cleaned.length < 4) {
             setValidationError('⚠️ Ingresa los 4 números de tu comprobante');
             return;
         }
@@ -66,21 +69,22 @@ export default function RastreoClient() {
         setOrder(null);
         setValidationError('');
 
-        // TAREA 4 - Capa 3: Concatenar prefijo en backend
-        const fullOrderCode = `WK-${inputNumber}`;
+        // TAREA 4 - Capa 3: Concatenar prefijo en backend y normalizar
+        const fullOrderCode = `WK-${cleaned}`;
 
         console.log('Buscando pedido:', fullOrderCode);
 
         try {
             const supabase = createClient();
-            const { data, error } = await supabase
+
+            // 2. Control de Caché (Bypass de caché del navegador)
+            const { data, error } = await (supabase as any)
                 .from('orders')
                 .select('order_code, status, product_name, quantity, customer_name, created_at, final_art_url')
-                .eq('order_code', fullOrderCode)
+                .ilike('order_code', fullOrderCode) // Búsqueda insensible a mayúsculas
                 .single();
 
             if (error || !data) {
-                // No romper la página, mostrar Empty State
                 console.log('Pedido no encontrado:', fullOrderCode);
                 setNotFound(true);
                 setOrder(null);
@@ -103,7 +107,7 @@ export default function RastreoClient() {
     };
 
     // TAREA 3 - Capa 2: Deshabilitar botón si no hay 4 números
-    const isButtonDisabled = inputNumber.length < 4 || loading;
+    const isButtonDisabled = inputNumber.trim().length < 4 || loading;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-12 px-4">
@@ -131,6 +135,9 @@ export default function RastreoClient() {
                                 <input
                                     type="text"
                                     inputMode="numeric"
+                                    autoCapitalize="none"
+                                    autoCorrect="off"
+                                    spellCheck={false}
                                     value={inputNumber}
                                     onChange={handleInputChange}
                                     onPaste={handlePaste}
