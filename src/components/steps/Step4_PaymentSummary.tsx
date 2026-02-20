@@ -217,117 +217,113 @@ export default function Step4_PaymentSummary() {
             <div className="space-y-4">
                 <h3 className="font-bold text-lg text-gray-900">Elige tu método de pago</h3>
 
-                {/* Adelanto Option */}
-                <button
-                    onClick={() => setPaymentMethod('ADELANTO_60')}
-                    className={`
-            w-full border-2 rounded-xl p-6 text-left transition-all
+                <div className="grid grid-cols-2 gap-3">
+
+                    {/* ── Adelanto Option ── */}
+                    <button
+                        onClick={() => setPaymentMethod('ADELANTO_60')}
+                        className={`
+            w-full border-2 rounded-xl p-4 text-left transition-all h-full
             ${paymentMethod === 'ADELANTO_60'
-                            ? 'border-[#742384] bg-purple-50'
-                            : 'border-gray-200 hover:border-purple-200'
-                        }
+                                ? 'border-[#742384] bg-purple-50 shadow-md'
+                                : 'border-gray-200 hover:border-purple-200'
+                            }
           `}
-                >
-                    <div className="flex items-start gap-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${paymentMethod === 'ADELANTO_60' ? 'border-[#742384] bg-[#742384]' : 'border-gray-300'
-                            }`}>
-                            {paymentMethod === 'ADELANTO_60' && (
-                                <div className="w-3 h-3 bg-white rounded-full"></div>
-                            )}
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                                <Wallet className="text-gray-700" size={20} />
-                                <p className="font-bold text-lg">Dejar Adelanto</p>
+                    >
+                        <div className="flex flex-col gap-3 h-full">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === 'ADELANTO_60' ? 'border-[#742384] bg-[#742384]' : 'border-gray-300'}`}>
+                                {paymentMethod === 'ADELANTO_60' && (
+                                    <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                                )}
                             </div>
-                            <p className="text-sm text-gray-600 mb-3">
-                                💳 Cancela el resto al momento de recoger tu producto
-                            </p>
-                            <div className="bg-white rounded-lg p-4 border space-y-2">
-                                <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                                    <span className="text-sm text-gray-600">Total de la orden:</span>
-                                    <span className="font-semibold text-lg text-gray-900">S/ {bulkPrice.toFixed(2)}</span>
+                            <div>
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                    <Wallet className="text-[#742384]" size={17} />
+                                    <p className="font-bold text-sm leading-tight">Dejar Adelanto</p>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm font-medium text-gray-700">Pagar ahora ({deposit_percent}%):</span>
-                                    <span className="font-bold text-xl text-[#742384]">S/ {depositAmount.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-500">Pendiente al recoger:</span>
-                                    <span className="font-semibold text-yellow-600">S/ {previewAdelantoPending.toFixed(2)}</span>
+                                <p className="text-xs text-gray-500 mb-3">
+                                    Cancela el resto al recoger
+                                </p>
+                                <div className="bg-white rounded-lg p-3 border space-y-1.5 text-xs">
+                                    <div className="flex justify-between items-center pb-1.5 border-b border-gray-100">
+                                        <span className="text-gray-500">Total orden:</span>
+                                        <span className="font-semibold text-gray-900">S/ {bulkPrice.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-medium text-gray-700">Pagar ahora ({deposit_percent}%):</span>
+                                        <span className="font-bold text-sm text-[#742384]">S/ {depositAmount.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-400">Al recoger:</span>
+                                        <span className="font-semibold text-yellow-600">S/ {previewAdelantoPending.toFixed(2)}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </button>
+                    </button>
 
-                {/* Total Payment Option */}
-                <button
-                    onClick={() => setPaymentMethod('TOTAL')}
-                    className={`
-            w-full border-2 rounded-xl p-6 text-left transition-all relative overflow-hidden
+                    {/* ── Pago Total Option ── */}
+                    <button
+                        onClick={() => setPaymentMethod('TOTAL')}
+                        className={`
+            w-full border-2 rounded-xl p-4 text-left transition-all relative overflow-hidden h-full
             ${paymentMethod === 'TOTAL'
-                            ? 'border-emerald-500 bg-emerald-50'
-                            : 'border-gray-200 hover:border-emerald-200'
-                        }
+                                ? 'border-emerald-500 bg-emerald-50 shadow-md'
+                                : 'border-gray-200 hover:border-emerald-200'
+                            }
           `}
-                >
-                    {/* Recommended Badge */}
-                    <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                        RECOMENDADO
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 ${paymentMethod === 'TOTAL' ? 'border-emerald-500 bg-emerald-500' : 'border-gray-300'
-                            }`}>
-                            {paymentMethod === 'TOTAL' && (
-                                <div className="w-3 h-3 bg-white rounded-full"></div>
-                            )}
+                    >
+                        {/* Recommended Badge */}
+                        <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
+                            RECOMENDADO
                         </div>
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                                <CheckCircle className="text-emerald-600" size={20} />
-                                <p className="font-bold text-lg">Pago Total (🎁 Ahorro Extra)</p>
+
+                        <div className="flex flex-col gap-3 h-full">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${paymentMethod === 'TOTAL' ? 'border-emerald-500 bg-emerald-500' : 'border-gray-300'}`}>
+                                {paymentMethod === 'TOTAL' && (
+                                    <div className="w-2.5 h-2.5 bg-white rounded-full" />
+                                )}
                             </div>
-                            {fullPaymentBonus > 0 ? (
-                                <>
-                                    <p className="text-sm text-emerald-700 font-semibold mb-3">
-                                        ✨ ¡Recibe S/ {fullPaymentBonus.toFixed(2)} de bonificación!
-                                    </p>
-                                    <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-4 border-2 border-emerald-300">
-                                        <p className="text-xs font-bold text-emerald-800 mb-2">🎉 ¡Felicidades! Accediste al Bono por Pago Total</p>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm text-gray-600">Precio normal:</span>
-                                            <span className="text-gray-400 line-through font-semibold">S/ {bulkPrice.toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm font-medium text-emerald-700">Bonificación:</span>
-                                            <span className="text-emerald-600 font-bold">-S/ {fullPaymentBonus.toFixed(2)}</span>
-                                        </div>
-                                        <div className="border-t-2 border-emerald-300 mt-2 pt-2">
+                            <div>
+                                <div className="flex items-center gap-1.5 mb-1.5">
+                                    <CheckCircle className="text-emerald-600" size={17} />
+                                    <p className="font-bold text-sm leading-tight">Pago Total 🎁</p>
+                                </div>
+                                {fullPaymentBonus > 0 ? (
+                                    <>
+                                        <p className="text-xs text-emerald-700 font-semibold mb-3">
+                                            ✨ Bono S/ {fullPaymentBonus.toFixed(2)} incluido
+                                        </p>
+                                        <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg p-3 border border-emerald-200 text-xs space-y-1.5">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm font-bold text-gray-700">Total a pagar:</span>
-                                                <span className="font-black text-2xl text-emerald-600">S/ {finalPriceWithBonus.toFixed(2)}</span>
+                                                <span className="text-gray-500">Precio normal:</span>
+                                                <span className="text-gray-400 line-through">S/ {bulkPrice.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-emerald-700">Bonificación:</span>
+                                                <span className="text-emerald-600 font-bold">-S/ {fullPaymentBonus.toFixed(2)}</span>
+                                            </div>
+                                            <div className="border-t border-emerald-200 pt-1.5">
+                                                <div className="flex justify-between items-center">
+                                                    <span className="font-bold text-gray-700">Total a pagar:</span>
+                                                    <span className="font-black text-base text-emerald-600">S/ {finalPriceWithBonus.toFixed(2)}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <p className="text-sm text-gray-600 mb-3">
-                                        Paga todo ahora
-                                    </p>
+                                    </>
+                                ) : (
                                     <div className="bg-white rounded-lg p-3 border border-emerald-200">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm text-gray-600">Total a pagar:</span>
-                                            <span className="font-bold text-2xl text-emerald-600">S/ {bulkPrice.toFixed(2)}</span>
+                                        <div className="flex justify-between items-center text-xs">
+                                            <span className="text-gray-500">Total a pagar:</span>
+                                            <span className="font-bold text-base text-emerald-600">S/ {bulkPrice.toFixed(2)}</span>
                                         </div>
                                     </div>
-                                </>
-                            )}
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </button>
+                    </button>
+
+                </div> {/* end grid */}
             </div>
 
             {/* Yape Upload */}
@@ -337,45 +333,63 @@ export default function Step4_PaymentSummary() {
                     Realiza tu pago y sube el comprobante
                 </h3>
 
-                {/* ORDER CODE DISPLAY */}
-                <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-5 mb-6 text-center shadow-lg">
-                    <p className="text-white text-sm font-medium mb-2">Tu código de pedido</p>
-                    <p className="text-white text-4xl font-black tracking-wider mb-1">{orderCode}</p>
-                    <p className="text-white/80 text-xs">Guarda este código para rastrear tu pedido</p>
+                {/* ORDER CODE — compact & elegant */}
+                <div className="flex items-center gap-3 bg-white border border-purple-200 rounded-xl px-4 py-3 mb-5 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <span className="text-[#742384] text-sm font-black">#</span>
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 font-medium">Código de pedido</p>
+                        <p className="text-xl font-black text-[#742384] tracking-wider leading-tight">{orderCode}</p>
+                    </div>
+                    <p className="text-xs text-gray-400 ml-auto text-right hidden sm:block">Úsalo para<br />rastrear tu pedido</p>
                 </div>
 
-                {/* QR CODE SECTION */}
-                <div className="bg-white rounded-lg p-6 mb-6 border-2 border-purple-300 text-center">
-                    <p className="font-semibold text-gray-900 mb-3">📱 Escanea el QR para pagar con Yape:</p>
+                {/* QR + YAPE INSTRUCTIONS */}
+                <div className="bg-white rounded-xl border-2 border-purple-200 overflow-hidden mb-5">
 
-                    {/* Real QR Image */}
-                    <div className="flex justify-center mb-4 text-center">
+                    {/* Header — personalizado */}
+                    <div className="bg-gradient-to-r from-[#742384] to-pink-600 px-5 py-4 text-white text-center">
+                        <p className="font-black text-base leading-snug">
+                            Yapea al <span className="text-yellow-300 tracking-wider">983 554 435</span> el monto seleccionado.
+                        </p>
+                        <p className="text-white/90 text-sm font-medium">A nombre de <span className="font-bold">Omar Mayta</span></p>
+                    </div>
+
+                    {/* Monto destacado */}
+                    <div className="px-5 pt-4 pb-2 text-center border-b border-purple-100">
+                        <p className="text-xs text-gray-500 font-medium mb-0.5">Monto a pagar ahora</p>
+                        <p className="text-emerald-600 font-black text-3xl">
+                            S/ {amountToPay.toFixed(2)}
+                        </p>
+                    </div>
+
+                    {/* QR centrado */}
+                    <div className="flex flex-col items-center px-5 py-5 gap-3">
                         <img
                             src="/images/qr-pago.png"
                             alt="QR de Pago Yape"
-                            className="w-56 h-auto rounded-xl shadow-md border border-purple-100"
+                            className="w-52 h-auto rounded-xl shadow-md border border-purple-100"
                         />
+                        {/* Texto de ayuda para captura de QR */}
+                        <div className="bg-purple-50 border border-purple-100 rounded-lg px-4 py-3 text-center max-w-xs">
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                💡 O toma captura del QR y dentro de Yape elige
+                                <span className="font-semibold text-[#742384]"> &quot;Subir una imagen con QR&quot;</span> para yapear como prefieras.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Yape Details */}
-                    <div className="bg-purple-50 rounded-lg p-5 border border-purple-200">
-                        <p className="font-bold text-gray-900 mb-3 flex items-center justify-center gap-2">
-                            💳 Datos para el Yapeo:
+                    {/* Alerta código */}
+                    <div className="bg-yellow-50 border-t border-yellow-200 px-5 py-3">
+                        <p className="text-xs text-orange-700 font-semibold flex items-start gap-2">
+                            <span className="text-base flex-shrink-0">⚠️</span>
+                            <span>
+                                <strong>Importante:</strong> Incluye el código{' '}
+                                <span className="font-black text-[#742384]">{orderCode}</span>{' '}
+                                en la descripción de tu Yape para que validemos tu pedido rápidamente.
+                            </span>
                         </p>
-                        <div className="space-y-2 text-center">
-                            <p className="text-gray-600">Titular: <span className="font-bold text-gray-900 uppercase">Omar Mayta</span></p>
-                            <p className="text-gray-600">Número: <span className="text-[#742384] font-black text-2xl tracking-wider">983 555 435</span></p>
-                            <div className="mt-4 pt-4 border-t border-purple-200">
-                                <p className="text-sm text-gray-500 font-medium">Monto exacto a pagar:</p>
-                                <p className="text-emerald-600 font-black text-3xl mt-1">S/ {amountToPay.toFixed(2)}</p>
-                            </div>
-                            <div className="mt-4 pt-4 border-t border-purple-200 bg-yellow-50 -mx-5 -mb-5 px-5 py-4 rounded-b-lg">
-                                <p className="text-xs text-orange-700 font-semibold flex items-start gap-2">
-                                    <span className="text-base">⚠️</span>
-                                    <span><strong>Importante:</strong> Incluye el código <span className="font-black">{orderCode}</span> en la descripción de tu Yape/Plin para validar tu pedido rápido.</span>
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
