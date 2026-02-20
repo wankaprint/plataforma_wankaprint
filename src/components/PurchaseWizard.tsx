@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { usePurchaseStepper } from '@/contexts/PurchaseStepperContext';
 import PurchaseStepper from './PurchaseStepper';
 import Step1_QuantitySelector from './steps/Step1_QuantitySelector';
@@ -10,8 +11,13 @@ import Step4_PaymentSummary from './steps/Step4_PaymentSummary';
 export default function PurchaseWizard() {
     const { currentStep } = usePurchaseStepper();
 
+    // Auto-scroll to top on every step change (and on first render / checkout entry)
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currentStep]);
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8">
+        <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 py-8">
             <div className="max-w-5xl mx-auto px-4">
                 {/* Progress Indicator */}
                 <PurchaseStepper />
