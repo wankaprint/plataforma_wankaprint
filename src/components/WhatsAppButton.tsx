@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 const WA_NUMBER = '51983555435'
 const WA_MESSAGE = encodeURIComponent(
@@ -9,11 +10,24 @@ const WA_MESSAGE = encodeURIComponent(
 const WA_HREF = `https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`
 
 export default function WhatsAppButton() {
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+
     const [visible, setVisible] = useState(false)
     const [showTooltip, setShowTooltip] = useState(false)
 
+    // Lógica para ocultar el botón en rutas específicas
+    const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/admin-orders') || pathname === '/login'
+    const isCheckoutMode = pathname.startsWith('/product/') && searchParams.get('mode') === 'checkout'
+    const shouldHide = isAdminRoute || isCheckoutMode
+
     // Fade-in after mount, tooltip after 3 s
     useEffect(() => {
+        if (shouldHide) {
+            setVisible(false)
+            setShowTooltip(false)
+            return
+        }
         const visTimer = setTimeout(() => setVisible(true), 300)
         const tipTimer = setTimeout(() => setShowTooltip(true), 3000)
         // Auto-hide tooltip after 6 s so it's not intrusive
@@ -23,7 +37,9 @@ export default function WhatsAppButton() {
             clearTimeout(tipTimer)
             clearTimeout(hideTimer)
         }
-    }, [])
+    }, [shouldHide])
+
+    if (shouldHide) return null
 
     return (
         <div

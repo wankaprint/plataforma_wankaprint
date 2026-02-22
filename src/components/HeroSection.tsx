@@ -147,34 +147,40 @@ export default function HeroSection() {
                             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-yellow-300/80 border border-yellow-400/20 bg-yellow-400/10 px-4 py-1.5 rounded-full"
                         >
                             <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-                            Imprenta Digital en Huancayo
+                            📍 Imprenta Digital en Huancayo
                         </motion.span>
 
                         {/* H1 */}
-                        <motion.h1
-                            variants={item}
-                            className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight"
-                        >
-                            Impresión de{' '}
-                            <span
-                                className="text-yellow-400"
-                                style={{
-                                    textShadow: '0 0 28px rgba(234,179,8,0.45)',
-                                }}
+                        <div className="space-y-4">
+                            <motion.h1
+                                variants={item}
+                                className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.1] tracking-tight"
                             >
-                                Calidad
-                            </span>
-                            <br />
-                            Sin Complicaciones
-                        </motion.h1>
+                                Tu publicidad lista <br className="hidden md:block" />
+                                <span
+                                    className="text-yellow-400"
+                                    style={{
+                                        textShadow: '0 0 28px rgba(234,179,8,0.45)',
+                                    }}
+                                >
+                                    sin salir de casa.
+                                </span>
+                            </motion.h1>
 
-                        {/* Subtitle */}
+                            <motion.p
+                                variants={item}
+                                className="text-xl md:text-2xl font-bold text-gray-300 opacity-90"
+                            >
+                                (Diseño profesional incluido sin costo adicional)
+                            </motion.p>
+                        </div>
+
+                        {/* Description */}
                         <motion.p
                             variants={item}
-                            className="text-lg md:text-xl text-white/85 max-w-lg leading-relaxed"
+                            className="text-lg md:text-xl text-white/90 max-w-xl leading-loose font-medium"
                         >
-                            La plataforma líder en Huancayo para tus necesidades de impresión.
-                            Tarjetas, volantes, banners y más — directamente a tu negocio.
+                            Sube tu idea o boceto y nuestro equipo de diseñadores lo hace realidad. Ahorra tiempo coordinando todo por WhatsApp y aprovecha nuestros descuentos por volumen.
                         </motion.p>
 
                         {/* CTA */}
@@ -189,7 +195,7 @@ export default function HeroSection() {
                                 whileTap={{ scale: 0.97 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                             >
-                                Ver Productos <ArrowRight size={20} />
+                                Ver Catálogo y Ofertas <ArrowRight size={20} />
                             </motion.a>
                         </motion.div>
 
