@@ -51,7 +51,7 @@ const QUOTE_STATUS_STYLES: Record<QuoteStatus, string> = {
     'Cerrado': 'bg-green-50 border-green-300 text-green-700',
 };
 
-const WA_NUMBER = '51983554435';
+const WA_NUMBER = '51983555435';
 
 /* ═══════════════════════════════════════════════════
    MAIN COMPONENT
