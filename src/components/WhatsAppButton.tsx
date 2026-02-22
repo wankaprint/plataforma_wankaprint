@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const WA_NUMBER = '51983554435'
+const WA_NUMBER = '51983555435'
 const WA_MESSAGE = encodeURIComponent(
     '¡Hola WankaPrint! 👋 Vengo de la web y me gustaría realizar un pedido o recibir asesoría con un proyecto de impresión. ¿Me podrían ayudar?'
 )
