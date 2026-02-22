@@ -351,7 +351,7 @@ export default function Step4_PaymentSummary() {
                     {/* Header — personalizado */}
                     <div className="bg-gradient-to-r from-[#742384] to-pink-600 px-5 py-4 text-white text-center">
                         <p className="font-black text-base leading-snug">
-                            Yapea al <span className="text-yellow-300 tracking-wider">983 554 435</span> el monto seleccionado.
+                            Yapea al <span className="text-yellow-300 tracking-wider">983 555 435</span> el monto seleccionado.
                         </p>
                         <p className="text-white/90 text-sm font-medium">A nombre de <span className="font-bold">Omar Mayta</span></p>
                     </div>

@@ -84,7 +84,7 @@ const PRODUCT_TYPES: ProductCard[] = [
     { value: 'Otro', label: 'Otro', emoji: '✏️' },
 ]
 
-const WA_NUMBER = '51983554435'
+const WA_NUMBER = '51983555435'
 
 /* ═══════════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -288,7 +288,7 @@ export default function ContactoClient() {
                                 </div>
                                 <div>
                                     <p className="font-bold text-gray-900 text-sm">¿Dudas? Escríbenos al instante</p>
-                                    <p className="text-green-700 text-sm font-medium">+51 983 554 435</p>
+                                    <p className="text-green-700 text-sm font-medium">+51 983 555 435</p>
                                 </div>
                             </a>
                         </div>
