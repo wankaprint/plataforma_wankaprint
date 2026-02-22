@@ -60,7 +60,7 @@ const PROPUESTAS_VALOR = [
     },
     {
         icon: ScanSearch,
-        titulo: 'Sigue tu Pedido en Vivo',
+        titulo: 'Verifica tu Pedido',
         texto: 'Verifica el estado de tu pedido con el código asignado al momento de pagar.',
         href: '/rastreo',
     },
@@ -228,7 +228,7 @@ export default function ContactoClient() {
                                     href={prop.href}
                                     className="inline-flex items-center gap-1 text-xs font-bold text-[#742384] hover:underline"
                                 >
-                                    Rastrear ahora →
+                                    Verifica ahora →
                                 </a>
                             )}
                         </div>

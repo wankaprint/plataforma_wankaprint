@@ -68,13 +68,6 @@ export default function Catalog() {
 
     return (
         <div className="space-y-12">
-            <div className="text-center space-y-4 max-w-2xl mx-auto">
-                <h2 className="text-4xl font-black text-gray-900 tracking-tight">Nuestros Productos</h2>
-                <p className="text-lg text-gray-500">
-                    Selecciona el producto ideal para tu negocio. Calidad garantizada y entrega puntual en todo Huancayo.
-                </p>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {products.map((product) => {
                     const hoverImage = product.secondary_images?.[0] ?? null

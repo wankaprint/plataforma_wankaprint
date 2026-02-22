@@ -10,6 +10,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
     title: 'WankaPrint - Imprenta Online',
     description: 'Impresiones de calidad en Perú',
+    icons: {
+        icon: '/images/iconos/logo_circulo.png',
+        shortcut: '/images/iconos/logo_circulo.png',
+        apple: '/images/iconos/logo_circulo.png',
+    },
 }
 
 export default function RootLayout({

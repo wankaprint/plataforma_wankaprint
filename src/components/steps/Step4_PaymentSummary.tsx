@@ -139,7 +139,7 @@ export default function Step4_PaymentSummary() {
 
                 const rawMessage = `¡Hola, WankaPrint! 👋 He registrado mi pedido desde la web.\n\n` +
                     `📝 Orden: ${orderCode}\n` +
-                    `🔍 Rastrea tu pedido en: wankaprint.com/rastreo\n` +
+                    `🔍 Verifica el estado de tu pedido en: wankaprint.com/rastreo\n` +
                     `👤 Cliente: ${customerData.firstName} ${customerData.lastName}\n` +
                     `📦 Producto: ${product.name} (${selectedQuantity} unidades)\n\n` +
                     `💵 Resumen de Pago:\n` +

@@ -95,7 +95,7 @@ export default function RastreoClient() {
                 {/* Header */}
                 <div className="text-center mb-10">
                     <h1 className="text-4xl font-black text-[#742384] mb-2">
-                        Rastrea tu <span className="text-pink-500">Pedido</span>
+                        Verifica el estado de tu <span className="text-pink-500">Pedido</span>
                     </h1>
                     <p className="text-gray-600">Ingresa los 4 números de tu comprobante de pago</p>
                 </div>

@@ -102,7 +102,7 @@ export default function AboutPage() {
                                     href="/contacto"
                                     className="inline-flex items-center gap-2 px-7 py-4 bg-white text-gray-800 font-bold rounded-2xl border-2 border-gray-200 hover:border-[#742384] hover:text-[#742384] transition-all"
                                 >
-                                    Contactarnos
+                                    Contáctanos
                                 </Link>
                             </div>
                         </div>
@@ -174,7 +174,7 @@ export default function AboutPage() {
                                 <MissionFeature
                                     icon={<Laptop size={22} />}
                                     title="Gestión 100% Online"
-                                    description="Desde nuestra plataforma controlas tu pedido, envías tus archivos y coordinas todo sin moverte de tu oficina o casa."
+                                    description="Desde nuestra plataforma controlas tu pedido, envías tus archivos y coordinas todo sin moverte de tu casa u oficina."
                                 />
                                 <MissionFeature
                                     icon={<ArrowRight size={22} />}
@@ -223,7 +223,7 @@ export default function AboutPage() {
                         <QualityCard
                             icon={<Clock size={26} />}
                             title="Más tiempo para ti"
-                            description="Mientras nosotros nos encargamos de que tus dípticos queden perfectos, tú puedes enfocarte en hacer crecer tu negocio — o simplemente disfrutar tu día."
+                            description="Mientras nosotros nos encargamos de que tus trabajos queden perfectos, tú puedes enfocarte en hacer crecer tu negocio — o simplemente disfrutar tu día."
                         />
                     </div>
 
