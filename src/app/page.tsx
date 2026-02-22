@@ -1,6 +1,7 @@
 import Catalog from '@/components/Catalog'
 import InfiniteSlider from '@/components/InfiniteSlider'
 import HeroSection from '@/components/HeroSection'
+import StepsSection from '@/components/StepsSection'
 
 export default function Home() {
     return (
@@ -9,6 +10,9 @@ export default function Home() {
 
             {/* Slider Section */}
             <InfiniteSlider />
+
+            {/* Strategic Section: 4 Simple Steps */}
+            <StepsSection />
 
             {/* Catalog Preview Section */}
             <section id="catalogo" className="bg-gray-50 py-20 flex-1">
