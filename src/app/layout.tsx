@@ -4,6 +4,7 @@ import './globals.css'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import { Suspense } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -36,7 +37,9 @@ export default function RootLayout({
                         </div>
                     </footer>
                 </div>
-                <WhatsAppButton />
+                <Suspense fallback={null}>
+                    <WhatsAppButton />
+                </Suspense>
             </body>
         </html>
     )
